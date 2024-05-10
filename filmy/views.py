@@ -64,6 +64,7 @@ class AktorRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
 class UserCreateList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializerShort
+    permission_classes = [IsAuthenticated]
 
 
 class UserRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
