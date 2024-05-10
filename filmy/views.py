@@ -34,3 +34,11 @@ def edycja(request, film_id):
         form.save()
         return redirect(wszystkie)
     return render(request, 'filmy/u.html', {'form': form})
+
+
+def usun(request, film_id):
+    film = get_object_or_404(Film, pk=film_id)
+    if request.method == "POST":
+        film.delete()
+        return redirect(wszystkie)
+    return render(request, 'filmy/usun.html', {'film': film})
