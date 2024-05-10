@@ -20,7 +20,7 @@ class FilmCreateList(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
-        queryset = Film.objects.all().order_by('-rok','tytul')
+        queryset = Film.objects.all().order_by('-rok', 'tytul')
         tytul = self.request.query_params.get('tytul')
         id = self.request.query_params.get('id')
         if tytul is not None:
@@ -123,7 +123,7 @@ class statRezyserLiczbaFilmow(generics.ListAPIView):
     rf = []
 
     for r in rezyserOK:
-        rf.append([r,Film.objects.filter(extrainfo__rezyser__exact=r).count()])
+        rf.append([r, Film.objects.filter(extrainfo__rezyser__exact=r).count()])
 
     rf.sort(key=lambda a: a[1], reverse=True)
     queryset = rf

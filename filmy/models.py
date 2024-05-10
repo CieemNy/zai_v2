@@ -35,6 +35,7 @@ class ExtraInfo(models.Model):
     gatunek = models.PositiveSmallIntegerField(choices=GATUNEK, null=True, blank=True)
     punkty_widzow = models.PositiveSmallIntegerField(default=0)
     film = models.OneToOneField(Film, on_delete=models.CASCADE, null=True, blank=True)
+    rezyser = models.CharField(max_length=100, null=True, blank=True)
     owner = models.ForeignKey(User, related_name='einfo', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
