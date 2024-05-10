@@ -30,7 +30,7 @@ class FilmModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Film
-        fields = ['id', 'tytul', 'rok', 'imdb_points', 'premiera', 'opis', 'owner', 'extrainfo', 'ocena_set',
+        fields = ['id', 'tytul', 'rok', 'imdb_pkts', 'premiera', 'opis', 'owner', 'extrainfo', 'ocena_set',
                   'aktor_set']
 
 
