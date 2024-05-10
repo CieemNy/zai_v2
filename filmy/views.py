@@ -185,4 +185,9 @@ def api_root(request, format=None):
         'Informacje dodatkowe': reverse('ExtraInfoCreateList', request=request, format=format),
         'Wszystkie oceny': reverse('OcenaCreateList', request=request, format=format),
         'Wszyscy aktorzy': reverse('AktorCreateList', request=request, format=format),
+        'Statystyki_rezyser_liczba_filmow': reverse('statRezyserLiczbaFilmow', request=request, format=format),
+        'Statystyki_filmy_liczba_ocen': reverse('statFilmyLiczbaOcen', request=request, format=format),
+        'Statystyki_filmy_bez_ocen': reverse('statFilmyBezOcen', request=request, format=format),
+        'Statystyki_filmy_dobre_slabe': reverse('statFilmyKategorieDobrySlaby', request=request, format=format),
+        'Statystyki_filmy_gwiazdki_max_min': reverse('statFilmyGwiazdkiMaxMin', request=request, format=format),
     })
