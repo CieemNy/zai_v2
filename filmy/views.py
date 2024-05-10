@@ -18,6 +18,6 @@ class FilmCreateList(generics.ListCreateAPIView):
     serializer_class = FilmModelSerializer
 
 
-class UserList(generics.ListAPIView):
+class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializerShort
