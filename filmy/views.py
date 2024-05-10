@@ -7,6 +7,8 @@ from .permissions import *
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from .serializers import statRezyser, statOceny
+from django.db.models import Count, Q, Max, Min
 
 
 class FilmCreateList(generics.ListCreateAPIView):
@@ -112,6 +114,67 @@ class UserRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_403_FORBIDDEN)
+
+
+class statRezyserLiczbaFilmow(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = statRezyser
+    rezyserOK = set([r.rezyser for r in ExtraInfo.objects.filter(rezyser__isnull=False)])
+    rf = []
+
+    for r in rezyserOK:
+        rf.append([r,Film.objects.filter(extrainfo__rezyser__exact=r).count()])
+
+    rf.sort(key=lambda a: a[1], reverse=True)
+    queryset = rf
+
+
+class statFilmyLiczbaOcen(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = statOceny
+    filmy = Film.objects.filter(ocena__id__isnull=False).annotate(l_ocen=Count("ocena__id")).order_by("-l_ocen")
+    fo = []
+
+    for f in filmy:
+        fo.append([f.tytul, f.l_ocen])
+
+    fo.sort(key=lambda a: a[1], reverse=True)
+    queryset = fo
+
+
+class statFilmyKategorieDobrySlaby(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = statOceny
+    dobry = Count("ocena__id", filter=Q(ocena__gwiazdki__gt=5))
+    slaby = Count("ocena__id", filter=Q(ocena__gwiazdki__lte=5))
+    filmy = Film.objects.filter(ocena__id__isnull=False).annotate(dobry=dobry).annotate(slaby=slaby)
+    fk = []
+
+    for f in filmy:
+        fk.append([f.tytul, f.dobry, f.slaby])
+
+    queryset = fk
+
+
+class statFilmyGwiazdkiMaxMin(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = statOceny
+    gmax = Max("ocena__gwiazdki")
+    gmin = Min("ocena__gwiazdki")
+    filmy = Film.objects.filter(ocena__id__isnull=False).annotate(gmax=gmax).annotate(gmin=gmin)
+    fk = []
+
+    for f in filmy:
+        fk.append([f.tytul, f.gmax, f.gmin])
+
+    fk.sort(key=lambda a: a[1], reverse=True)
+    queryset = fk
+
+
+class statFilmyBezOcen(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FilmModelSerializer
+    queryset = Film.objects.filter(ocena__id__isnull=True)
 
 
 @api_view(['GET'])
