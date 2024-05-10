@@ -13,3 +13,9 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+
+class UserSerializerShort(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["username", "is_superuser", "email", "is_staff", "is_active"]
