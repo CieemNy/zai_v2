@@ -1,21 +1,40 @@
 from rest_framework import serializers
-from .models import Film
 from django.contrib.auth.models import User
+from .models import Film, ExtraInfo, Ocena, Aktor
+
+
+class ExtraInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExtraInfo
+        fields = ['czas_trwania', 'gatunek', 'rezyser', 'filmy']
+
+
+class OcenaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ocena
+        fields = ['recenzja', 'gwiazdki', 'film']
+
+
+class AktorSerializer(serializers.ModelSerializer):
+    filmy = serializers.SlugRelatedField(slug_field='tytul', queryset=Film.objects.all(), many=True)
+
+    class Meta:
+        model = Aktor
+        fields = ['id', 'imie', 'nazwisko', 'filmy']
 
 
 class FilmModelSerializer(serializers.ModelSerializer):
+    extrainfo = serializers.StringRelatedField()
+    ocena_set = OcenaSerializer(read_only=True, many=True)
+    aktor_set = serializers.StringRelatedField(read_only=True, many=True)
+
     class Meta:
         model = Film
-        fields = '__all__'
+        fields = ['id', 'tytul', 'rok', 'imdb_points', 'premiera', 'opis', 'owner', 'extrainfo', 'ocena_set',
+                  'aktor_set']
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
-
-
-class UserSerializerShort(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["username", "is_superuser", "email", "is_staff", "is_active"]
+        fields = ['id', 'username', 'is_staff', 'is_superuser', 'is_active']
