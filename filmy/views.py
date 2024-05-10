@@ -30,6 +30,7 @@ class UserCreateList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
