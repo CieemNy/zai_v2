@@ -6,7 +6,7 @@ from .models import Film, ExtraInfo, Ocena, Aktor
 class ExtraInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExtraInfo
-        fields = ['czas_trwania', 'gatunek', 'rezyser', 'filmy']
+        fields = ['czas_trwania', 'gatunek', 'rezyser', 'film']
 
 
 class OcenaSerializer(serializers.ModelSerializer):
@@ -57,3 +57,11 @@ class UserSerializerShort(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class statRezyser(serializers.ListSerializer):
+    child = serializers.CharField()
+
+
+class statOceny(serializers.ListSerializer):
+    child = serializers.CharField()
