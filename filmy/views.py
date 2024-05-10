@@ -5,8 +5,11 @@ from rest_framework import generics
 
 
 class FilmCreateList(generics.ListCreateAPIView):
-    queryset = Film.objects.all().order_by('-rok', 'tytul')
+    queryset = Film.objects.all().order_by('-rok','tytul')
     serializer_class = FilmModelSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class FilmRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
