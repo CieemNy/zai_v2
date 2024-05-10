@@ -1,9 +1,23 @@
 from django.contrib import admin
-from .models import Film
+from .models import Film, ExtraInfo, Ocena, Aktor
+
+admin.site.register(Aktor)
 
 
+class ExtraInfoInline(admin.TabularInline):
+    model = ExtraInfo
+
+
+class OcenaInline(admin.TabularInline):
+    model = Ocena
+    extra = 0
+
+
+class AktorInline(admin.TabularInline):
+    model = Aktor.filmy.through
+    extra = 0
+
+
+@admin.register(Film)
 class FilmAdmin(admin.ModelAdmin):
-    list_display = ['id', 'tytul', 'rok', 'opis', 'premiera', 'imdb_pkts']
-
-
-admin.site.register(Film, FilmAdmin)
+    inlines = [ExtraInfoInline, OcenaInline, AktorInline]
