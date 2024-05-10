@@ -129,7 +129,7 @@ class FilmUpdateMutation(graphene.Mutation):
         tytul = graphene.String(required=True)
         opis = graphene.String()
         rok = graphene.String()
-        imdb_points = graphene.Decimal()
+        imdb_pkts = graphene.Decimal()
         premiera = graphene.Date(default_value=None)
         owner_id = graphene.ID()
 
@@ -141,7 +141,7 @@ class FilmUpdateMutation(graphene.Mutation):
         film.opis = opis
         film.rok = rok
         film.premiera = premiera
-        film.imdb_points = imdb_points
+        film.imdb_pkts = imdb_points
         film.owner_id = owner_id
         film.save()
         return FilmUpdateMutation(film=film)
