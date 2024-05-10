@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.template import loader
 from filmy.models import Film
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from filmy.forms import FilmForm
 
 
@@ -25,3 +25,12 @@ def nowy(request):
         nowyform.save()
         return redirect(wszystkie)
     return render(request, 'filmy/c.html', {'nowyform': nowyform})
+
+
+def edycja(request, film_id):
+    film = get_object_or_404(Film, pk=film_id)
+    form = FilmForm(request.POST or None, instance=film)
+    if form.is_valid():
+        form.save()
+        return redirect(wszystkie)
+    return render(request, 'filmy/u.html', {'form': form})
