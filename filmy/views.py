@@ -7,3 +7,12 @@ class FilmList(generics.ListAPIView):
     queryset = Film.objects.all()
     serializer_class = FilmModelSerializer
 
+
+class FilmRetrieve(generics.RetrieveAPIView):
+    queryset = Film.objects.all()
+    serializer_class = FilmModelSerializer
+
+
+class FilmCreateList(generics.ListCreateAPIView):
+    queryset = Film.objects.all()
+    serializer_class = FilmModelSerializer
