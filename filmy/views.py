@@ -1,5 +1,5 @@
 from .models import Film
-from .serializers import FilmModelSerializer
+from .serializers import *
 from rest_framework import generics
 
 
@@ -16,3 +16,8 @@ class FilmRetrieve(generics.RetrieveAPIView):
 class FilmCreateList(generics.ListCreateAPIView):
     queryset = Film.objects.all()
     serializer_class = FilmModelSerializer
+
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
