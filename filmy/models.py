@@ -22,14 +22,32 @@ class ExtraInfo(models.Model):
     }
     czas_trwania = models.PositiveSmallIntegerField(null=True, blank=True)
     gatunek = models.PositiveSmallIntegerField(choices=GATUNEK, null=True, blank=True)
-    rezyser = models.CharField(max_length=50, blank=True, null=True)
+    punkty_widzow = models.PositiveSmallIntegerField(default=0)
+    film = models.OneToOneField(Film, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        for g in list(self.GATUNEK):
+            if g[0] == self.gatunek:
+                gok = g[1]
+        return "Film: {}, gatunek: {}, czas trwania: {}, punkty od widzów: {}".format(self.film.tytul,
+                                                                                      gok, self.czas_trwania,
+                                                                                      self.punkty_widzow)
 
 
 class Ocena(models.Model):
     recenzja = models.TextField(default="", blank=True)
     gwiazdki = models.PositiveSmallIntegerField(default=5)
+    film = models.ForeignKey(Film, on_delete=models.CASCADE)
+
+    def __str__(self):
+        rec = self.recenzja[:20] + ' ...'
+        return "Film: {}, gwiazdki: {}, recenzja: {}".format(self.film.tytul, str(self.gwiazdki), rec)
 
 
 class Aktor(models.Model):
     imie = models.CharField(max_length=32)
     nazwisko = models.CharField(max_length=32)
+    filmy = models.ManyToManyField(Film)
+
+    def __str__(self):
+        return "{} {}, gra w {} filmach z bazy danych".format(self.imie, self.nazwisko, str(self.filmy.count()))
