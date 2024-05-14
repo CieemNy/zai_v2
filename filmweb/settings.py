@@ -105,5 +105,8 @@ REST_FRAMEWORK = {
 }
 
 GRAPHENE = {
-    "SCHEMA": "filmy.schema.schema"
+    "SCHEMA": "filmy.schema.schema",
+    "MIDDLEWARE": [
+            "graphql_jwt.middleware.JSONWebTokenMiddleware",
+        ],
 }
