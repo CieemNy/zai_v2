@@ -2,6 +2,7 @@ import graphene
 from graphene_django import DjangoObjectType
 from django.contrib.auth.models import User
 from .models import Film, ExtraInfo, Ocena, Aktor
+import graphql_jwt
 
 
 #
@@ -169,6 +170,9 @@ class Mutation(graphene.ObjectType):
     create_film = FilmCreateMutation.Field()
     update_film = FilmUpdateMutation.Field()
     delete_film = FilmDeleteMutation.Field()
+    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    verify_token = graphql_jwt.Verify.Field()
+    refresh_token = graphql_jwt.Refresh.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
