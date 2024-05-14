@@ -42,30 +42,33 @@ class AktorType(DjangoObjectType):
         fields = "__all__"
 
 
+class Filters(graphene.InputObjectType):
+    tytul_zawiera = graphene.String(default_value="")
+    rok_mniejszy_od = graphene.Int(default_value=2000)
+    nazwisko_aktora = graphene.String(default_value="")
 #
 # Query
 #
-
 class Query(graphene.ObjectType):
-    filmy = graphene.List(FilmType, tytul_contains=graphene.String(default_value=""))
+    filmy = graphene.List(FilmType, filters=Filters())
     film_wg_id = graphene.Field(FilmType, id=graphene.ID(required=True))
     extrainfo = graphene.List(ExtraInfoType)
     extrainfo_wg_id = graphene.Field(ExtraInfoType, id=graphene.String())
     oceny = graphene.List(OcenaType)
     oceny_wg_filmu = graphene.List(OcenaType, film_tytul_contains=graphene.String(default_value=""))
-    aktorzy = graphene.List(AktorType, nazwisko_zawiera=graphene.String(default_value=""))
+    aktorzy = graphene.List(AktorType, filters=Filters())
 
-    def resolve_filmy(root, info, tytul_contains):
+    def resolve_filmy(root, info, filters):
         filmy = Film.objects.all()
         for f in filmy:
-            if f.rok < 2000:
+            if f.rok < filters.rok_mniejszy_od:
                 f.stary_nowy_film = "Stary film"
             else:
                 f.stary_nowy_film = "Nowy film"
-        if len(tytul_contains) > 0:
-            films = Film.objects.filter(tytul__contains=tytul_contains)
+        if len(filters.tytul_zawiera) > 0:
+            films = Film.objects.filter(tytul__contains=filters.tytul_zawiera)
             for f in films:
-                if f.rok < 2000:
+                if f.rok < filters.rok_mniejszy_od:
                     f.stary_nowy_film = "Stary film"
                 else:
                     f.stary_nowy_film = "Nowy film"
@@ -96,10 +99,12 @@ class Query(graphene.ObjectType):
 
         return oceny
 
-    def resolve_aktorzy(root, info, nazwisko_zawiera):
-        if len(nazwisko_zawiera) > 0:
-            return Aktor.objects.filter(nazwisko__contains=nazwisko_zawiera)
-        return Aktor.objects.all()
+    def resolve_aktorzy(root, info, filters):
+        aktorzy = Aktor.objects.all()
+        if len(filters.nazwisko_aktora) > 0:
+            aktor = Aktor.objects.filter(nazwisko__contains=filters.nazwisko_aktora)
+            return aktor
+        return aktorzy
 
 
 #
