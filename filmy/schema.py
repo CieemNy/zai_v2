@@ -3,7 +3,7 @@ from graphene_django import DjangoObjectType
 from django.contrib.auth.models import User
 from .models import Film, ExtraInfo, Ocena, Aktor
 import graphql_jwt
-
+from graphql_jwt.decorators import login_required
 
 #
 # Typy
@@ -59,6 +59,7 @@ class Query(graphene.ObjectType):
     oceny_wg_filmu = graphene.List(OcenaType, film_tytul_contains=graphene.String(default_value=""))
     aktorzy = graphene.List(AktorType, filters=Filters())
 
+    @login_required
     def resolve_filmy(root, info, filters):
         filmy = Film.objects.all()
         for f in filmy:
