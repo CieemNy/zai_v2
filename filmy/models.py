@@ -22,6 +22,9 @@ class Film(models.Model):
     def __str__(self):
         return "{} ({})".format(self.tytul, str(self.rok))
 
+    class Meta:
+        ordering = ['tytul']  # Dodaj domyślne porządkowanie
+
 
 class ExtraInfo(models.Model):
     GATUNEK = {
