@@ -3,6 +3,8 @@ import graphql_jwt
 from graphene import relay  # Import związany z integracją z Relay
 from graphene_django import DjangoObjectType
 from graphene import InputObjectType
+from graphql_relay import from_global_id
+
 from filmy.models import Film, ExtraInfo, Ocena, Aktor
 from django.contrib.auth.models import User
 from graphene_django.filter import DjangoFilterConnectionField  # Import związany z integracją z Relay
@@ -235,9 +237,26 @@ class OcenaCreateMutation(graphene.Mutation):
         return OcenaCreateMutation(ocena=ocena)
 
 
+class FilmUpdateMutationRelay(relay.ClientIDMutation):
+    class Input:
+        tytul = graphene.String(required=True)
+        id = graphene.ID()
+
+    film = graphene.Field(FilmType)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, tytul, id):
+        film = Film.objects.get(pk=from_global_id(id)[1])
+        film.tytul = tytul
+        film.save()
+
+        # Zwracamy instancję tej mutacji
+        return FilmUpdateMutationRelay(film=film)
+
 class Mutation(graphene.ObjectType):
     create_film = FilmCreateMutation.Field()
     update_film = FilmUpdateMutation.Field()
+    update_film_relay = FilmUpdateMutationRelay.Field()
     delete_film = FilmDeleteMutation.Field()
     create_aktor = AktorCreateMutation.Field()
     delete_aktor = AktorDeleteMutation.Field()
