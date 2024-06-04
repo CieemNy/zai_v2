@@ -2,7 +2,8 @@ import graphene
 from graphene_django import DjangoObjectType
 from django.contrib.auth.models import User
 from .models import Film, ExtraInfo, Ocena, Aktor
-
+import graphql_jwt
+from graphql_jwt.decorators import login_required
 
 #
 # Typy
@@ -58,6 +59,7 @@ class Query(graphene.ObjectType):
     oceny_wg_filmu = graphene.List(OcenaType, film_tytul_contains=graphene.String(default_value=""))
     aktorzy = graphene.List(AktorType, filters=Filters())
 
+    @login_required
     def resolve_filmy(root, info, filters):
         filmy = Film.objects.all()
         for f in filmy:
@@ -169,6 +171,9 @@ class Mutation(graphene.ObjectType):
     create_film = FilmCreateMutation.Field()
     update_film = FilmUpdateMutation.Field()
     delete_film = FilmDeleteMutation.Field()
+    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    verify_token = graphql_jwt.Verify.Field()
+    refresh_token = graphql_jwt.Refresh.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
